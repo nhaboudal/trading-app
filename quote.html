@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Data for {{ company_name }} ({{ symbol }})</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2c3020;
+            color: #ffffff;
+            padding: 20px;
+        }
+        .stock-card {
+            background: #333;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+        }
+        .stock-card h1, .stock-card h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .price {
+            font-size: 48px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .change {
+            font-size: 18px;
+            {% if close_price - open_price < 0 %}
+                color: #f44336; /* Red for negative change */
+            {% else %}
+                color: #4caf50; /* Green for positive change */
+            {% endif %}
+            margin-top: 10px;
+        }
+        .market-status {
+            margin-top: 10px;
+            color: #ccc;
+        }
+        .chart-container {
+            width: 100%;
+            height: 400px;
+            margin-top: 20px;
+        }
+        .news-container {
+            margin-top: 30px;
+        }
+        .news-article {
+            margin-bottom: 15px;
+        }
+        .news-header {
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        a {
+            color: #9a55d6;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .back-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #bcb1db;
+            color: rgb(0, 0, 0);
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .back-button:hover {
+            background-color: #9a55d6;
+        }
+        .footer {
+            text-align: center;
+            font-size: 14px;
+            color: #e5dff5;
+            margin-top: 30px;
+        }
+        .footer a {
+            color: #9a55d6;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="stock-card">
+    <h1>Market Summary &gt; {{ company_name }} ({{ symbol }})</h1>
+    
+    <div class="price">{{ close_price }} USD</div>
+    <div class="change">
+        {{ daily_change | round(2) }} USD 
+        ({{ daily_percentage_change | round(2) }}%) today
+    </div>
+    
+    <div class="market-status">
+        Closed: {{ current_datetime }} • After hours: {{ after_hours_price }} USD 
+        ({{ ((after_hours_price - close_price) / close_price * 100) | round(2) }}%)
+    </div>
+    
+   
+</div>
+
+<!-- News Section -->
+<div class="news-container">
+    <h2 class="news-header">Latest News about {{ company_name }}</h2>
+    {% if news_articles %}
+        {% for article in news_articles %}
+            <div class="news-article">
+                <a href="{{ article['url'] }}" target="_blank">{{ article['title'] }}</a>
+                <p>{{ article['description'] }}</p>
+                <small>Published on: {{ article['publishedAt'] | datetimeformat }}</small>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No news available for {{ company_name }} at this time.</p>
+    {% endif %}
+</div>
+
+<!-- Back Button -->
+<a href="/" class="back-button">Back to Search</a>
+
+<div class="footer">
+    Designed by <a href="https://nada.codes" target="_blank">Nada Haboudal</a>
+</div>
+
+
+</body>
+</html>
